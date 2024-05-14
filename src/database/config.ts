@@ -8,7 +8,6 @@ export function getConnectionOptions(envConfig: ENVIRONMENT['DB']) {
     return {
       type: envConfig.DIALECT,
       url: envConfig.URL,
-      synchronize: true,
       migrations: ['dist/database/migrations/*.ts'],
       entities: ['dist/**/*.entity.js'],
       migrationsRun: false,
