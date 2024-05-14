@@ -3,8 +3,8 @@ import { SeederService } from './seeder.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { getConnectionOptions } from '../config';
-import { ENVIRONMENT } from 'src/config/env';
-import configEnv from 'src/config/env';
+import { ENVIRONMENT } from '@/config/env';
+import configEnv from '@/config/env';
 
 @Module({
   imports: [
