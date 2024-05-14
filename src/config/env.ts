@@ -19,11 +19,11 @@ const configWithoutDBUrl = z.object({
     USER: z.string(),
     PASSWORD: z.string(),
     HOST: z.string(),
-    PORT: z.number(),
+    PORT: z.coerce.number(),
     HAS_URL: z.literal(false),
     DIALECT: z.enum(['postgres', 'mysql', 'mariadb', 'sqlite', 'mssql']),
   }),
-  SALTS_ROUNDS: z.string(),
+  SALT_ROUNDS: z.string(),
   SECRET: z.string(),
 });
 
