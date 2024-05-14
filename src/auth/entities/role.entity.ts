@@ -1,10 +1,5 @@
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
-export const Roles = {
-    USER: 'user',
-    ADMIN: 'admin'
-} as const;
-
 @Entity()
 export class Role {
     @PrimaryGeneratedColumn('uuid')
