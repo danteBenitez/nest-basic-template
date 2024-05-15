@@ -8,7 +8,7 @@ export function getConnectionOptions(envConfig: ENVIRONMENT['DB']) {
     return {
       type: envConfig.DIALECT,
       url: envConfig.URL,
-      migrations: ['dist/database/migrations/*.ts'],
+      migrations: ['dist/database/migrations/*.js'],
       entities: ['dist/**/*.entity.js'],
       migrationsRun: false,
       autoLoadEntities: true,
@@ -27,7 +27,7 @@ export function getConnectionOptions(envConfig: ENVIRONMENT['DB']) {
     username: configWithoutUrl.USER,
     password: configWithoutUrl.PASSWORD,
     database: configWithoutUrl.NAME,
-    migrations: ['dist/database/migrations/*.ts'],
+    migrations: ['dist/database/migrations/*.js'],
     entities: ['dist/**/*.entity.js'],
     autoLoadEntities: true,
     migrationsRun: false,
