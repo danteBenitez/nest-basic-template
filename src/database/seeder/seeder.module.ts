@@ -5,6 +5,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { getConnectionOptions } from '../config';
 import { ENVIRONMENT } from '@/config/env';
 import configEnv from '@/config/env';
+import { Role } from '@/auth/entities/role.entity';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import configEnv from '@/config/env';
         const dbConfig = config.get<ENVIRONMENT['DB']>('DB');
         return {
           ...getConnectionOptions(dbConfig),
+          entities: [Role]
         };
       },
       inject: [ConfigService],
