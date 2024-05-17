@@ -6,6 +6,8 @@ import { AppService } from './app.service';
 import configEnv, { ENVIRONMENT } from './config/env';
 import { getConnectionOptions } from './database/config';
 import { SeederModule } from './database/seeder/seeder.module';
+import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -21,7 +23,9 @@ import { SeederModule } from './database/seeder/seeder.module';
       },
       inject: [ConfigService],
     }),
-    SeederModule
+    SeederModule,
+    AuthModule,
+    UsersModule
   ],
   controllers: [AppController],
   providers: [AppService],
