@@ -7,7 +7,7 @@ import { SignInDto } from './dto/sign-in.dto';
 
 export interface VerifiedUserPayload {
     access_token: string;
-    user: User;
+    user: Omit<User, "password">;
 }
 
 @Injectable()

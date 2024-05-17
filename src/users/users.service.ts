@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
@@ -30,13 +30,22 @@ export class UsersService {
     return this.roleRepository.create({ name: ROLES.USER });
   }
 
-  async create(user: CreateUserDto): Promise<User> {
+  async create(user: CreateUserDto) {
+    const found = await this.usersRepository.findOne({
+      where: [{ name: user.name }, { email: user.email }],
+    });
+    console.log('asdasdasd', found);
+    if (found) {
+      throw new ConflictException("User or email already exists");
+    }
+
     const userInstance = this.usersRepository.create({ 
         ...user,
         roles: [this.defaultRole],
     });
     userInstance.password = await bcrypt.hash(user.password, this.saltRounds);
-    return this.usersRepository.save(user);
+    await this.usersRepository.save(user);
+    return userInstance;
   }
 
   async update(user_id: string, user: Partial<User>) {
@@ -52,12 +61,9 @@ export class UsersService {
 
     const userInstance = this.usersRepository.merge(found, user);
     userInstance.password = password;
-
     await this.usersRepository.save(userInstance);
 
-    const { password: _, ...result } = userInstance;
-
-    return result;
+    return userInstance;
   }
 
   async findOneByEmail(email: string): Promise<User | null> {
