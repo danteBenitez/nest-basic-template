@@ -15,16 +15,21 @@ describe('AuthController (e2e)', () => {
     await app.init();
   });
 
-  it('/sign-up (POST)', () => {
+  it('/sign-up (POST)', async () => {
     const mockUser = {
       username: 'test_user',
       email: 'example@gmail.com',
       password: '123456',
     };
 
-    return request(app.getHttpServer())
-      .post('/sign-up')
+    await request(app.getHttpServer())
+      .post('/auth/sign-up')
       .send(mockUser)
+      .expect(400)
+
+    await request(app.getHttpServer())
+      .post('/auth/sign-up')
+      .send({ ...mockUser, name: mockUser.username })
       .expect(201)
   });
 });
