@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
@@ -8,7 +8,6 @@ import { ConfigService } from '@nestjs/config';
 import { ENVIRONMENT } from '@/config/env';
 import { Role } from '@/auth/entities/role.entity';
 import { ROLES } from '@/auth/consts';
-
 
 /**
  * Service responsible for handling user-related operations.
@@ -42,6 +41,10 @@ export class UsersService {
 
   async update(user_id: string, user: Partial<User>) {
     const found = await this.usersRepository.findOne({ where: { user_id } });
+    if (!found) {
+      throw new NotFoundException("User not found");
+    }
+
     let password = user.password;
     if (password) {
       password = await bcrypt.hash(password, this.saltRounds); 
@@ -61,6 +64,10 @@ export class UsersService {
     return this.usersRepository.findOne({ where: { email } });
   }
 
+  async findOneByName(name: string): Promise<User | null> {
+    return this.usersRepository.findOne({ where: { name } });
+  }
+
   async findOneById(id: string): Promise<User | null> {
     return this.usersRepository.findOne({
       where: { user_id: id },
@@ -72,14 +79,23 @@ export class UsersService {
   }
 
   /**
-   * Returns true if the given user's name and password match the given username and password.
+   * Returns a user matching the given username and password if found. 
+   * Otherwise, returns null.
    * 
    * @param user 
    * @param username 
    * @param password 
    */
-  async matches(user: User, username: string, password: string): Promise<boolean> {
-    return user.name == username && (await this.comparePassword(password, user.password));
+  async matching(username: string, password: string): Promise<User | null> {
+    const found = await this.findOneByName(username);
+    if (!found) {
+      return null;
+    }
+    const matches = await this.comparePassword(password, found.password);
+    if (!matches) {
+      return null;
+    }
+    return found;
   }
 
   async findAll(): Promise<User[]> {
