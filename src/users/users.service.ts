@@ -98,7 +98,7 @@ export class UsersService {
       return null;
     }
     const matches = await this.comparePassword(password, found.password);
-    console.log(password, found.password);
+
     if (!matches) {
       return null;
     }
