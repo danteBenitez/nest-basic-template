@@ -34,7 +34,7 @@ export class UsersService {
     const found = await this.usersRepository.findOne({
       where: [{ name: user.name }, { email: user.email }],
     });
-    console.log('asdasdasd', found);
+
     if (found) {
       throw new ConflictException("User or email already exists");
     }
@@ -44,7 +44,7 @@ export class UsersService {
         roles: [this.defaultRole],
     });
     userInstance.password = await bcrypt.hash(user.password, this.saltRounds);
-    await this.usersRepository.save(user);
+    await this.usersRepository.save(userInstance);
     return userInstance;
   }
 
@@ -98,6 +98,7 @@ export class UsersService {
       return null;
     }
     const matches = await this.comparePassword(password, found.password);
+    console.log(password, found.password);
     if (!matches) {
       return null;
     }
