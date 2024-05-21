@@ -12,7 +12,7 @@ export function getConnectionOptions(envConfig: ENVIRONMENT['DB']) {
       entities: ['dist/**/*.entity.js'],
       migrationsRun: false,
       autoLoadEntities: true,
-      logging: true,
+      logging: envConfig.LOGGING ?? true,
     } as DataSourceOptions;
   }
 
