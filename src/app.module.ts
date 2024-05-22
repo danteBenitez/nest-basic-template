@@ -19,6 +19,7 @@ import { UsersModule } from './users/users.module';
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => {
         const dbConfig = configService.get<ENVIRONMENT['DB']>('DB');
+        if (!dbConfig) throw new Error('DB configuration not found');
         return getConnectionOptions(dbConfig);
       },
       inject: [ConfigService],

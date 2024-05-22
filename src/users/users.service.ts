@@ -23,7 +23,11 @@ export class UsersService {
   ) {}
 
   get saltRounds(): number {
-    return parseInt(this.configService.get<ENVIRONMENT['SALT_ROUNDS']>('SALT_ROUNDS'));
+    const saltRounds = this.configService.get<ENVIRONMENT['SALT_ROUNDS']>('SALT_ROUNDS');
+    if (!saltRounds) {
+      return 10;
+    }
+    return parseInt(saltRounds);
   }
 
   get defaultRole(): Role {
@@ -60,7 +64,7 @@ export class UsersService {
     }
 
     const userInstance = this.usersRepository.merge(found, user);
-    userInstance.password = password;
+    userInstance.password = password as string;
     await this.usersRepository.save(userInstance);
 
     return userInstance;
