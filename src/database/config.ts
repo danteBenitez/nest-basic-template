@@ -2,17 +2,22 @@ import { DataSource, DataSourceOptions } from 'typeorm';
 import getEnvConfig, { ENVIRONMENT } from '../config/env';
 
 export function getConnectionOptions(envConfig: ENVIRONMENT['DB']) {
+  const commonConfig = {
+    type: envConfig.DIALECT,
+    logging: envConfig.LOGGING ?? true,
+    migrations: ['dist/database/migrations/*.js'],
+    entities: ['dist/**/*.entity.js'],
+    migrationsRun: false,
+    autoLoadEntities: true,
+  }
+
   // If DB_URL is provided, then connect with that.
   // Otherwise, use the other environment variables.
   if (envConfig.HAS_URL) {
     return {
+      ...commonConfig,
       type: envConfig.DIALECT,
       url: envConfig.URL,
-      migrations: ['dist/database/migrations/*.js'],
-      entities: ['dist/**/*.entity.js'],
-      migrationsRun: false,
-      autoLoadEntities: true,
-      logging: envConfig.LOGGING ?? true,
     } as DataSourceOptions;
   }
 
@@ -27,11 +32,7 @@ export function getConnectionOptions(envConfig: ENVIRONMENT['DB']) {
     username: configWithoutUrl.USER,
     password: configWithoutUrl.PASSWORD,
     database: configWithoutUrl.NAME,
-    migrations: ['dist/database/migrations/*.js'],
-    entities: ['dist/**/*.entity.js'],
-    autoLoadEntities: true,
-    migrationsRun: false,
-    logging: configWithoutUrl.LOGGING ?? true,
+    ...commonConfig
   } as DataSourceOptions;
 }
 
