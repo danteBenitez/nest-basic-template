@@ -20,7 +20,7 @@ export class UsersService {
     @InjectRepository(User) private usersRepository: Repository<User>,
     @InjectRepository(Role) private roleRepository: Repository<Role>,
     private configService: ConfigService
-  ) {}
+  ) { }
 
   get saltRounds(): number {
     const saltRounds = this.configService.get<ENVIRONMENT['SALT_ROUNDS']>('SALT_ROUNDS');
@@ -43,9 +43,9 @@ export class UsersService {
       throw new ConflictException("User or email already exists");
     }
 
-    const userInstance = this.usersRepository.create({ 
-        ...user,
-        roles: [this.defaultRole],
+    const userInstance = this.usersRepository.create({
+      ...user,
+      roles: [this.defaultRole],
     });
     userInstance.password = await bcrypt.hash(user.password, this.saltRounds);
     await this.usersRepository.save(userInstance);
@@ -60,7 +60,7 @@ export class UsersService {
 
     let password = user.password;
     if (password) {
-      password = await bcrypt.hash(password, this.saltRounds); 
+      password = await bcrypt.hash(password, this.saltRounds);
     }
 
     const userInstance = this.usersRepository.merge(found, user);
@@ -71,19 +71,20 @@ export class UsersService {
   }
 
   async findOneByEmail(email: string): Promise<User | null> {
-    return this.usersRepository.findOne({ where: { email } });
+    return this.usersRepository.findOne({ where: { email }, relations: ['roles'] });
   }
 
   async findOneByName(name: string): Promise<User | null> {
-    return this.usersRepository.findOne({ where: { name } });
+    return this.usersRepository.findOne({ where: { name }, relations: ['roles'] });
   }
 
   async findOneById(id: string): Promise<User | null> {
     return this.usersRepository.findOne({
       where: { user_id: id },
+      relations: ['roles'],
     });
   }
-  
+
   async comparePassword(password: string, hash: string): Promise<boolean> {
     return bcrypt.compare(password, hash);
   }
@@ -110,6 +111,8 @@ export class UsersService {
   }
 
   async findAll(): Promise<User[]> {
-    return this.usersRepository.find();
+    return this.usersRepository.find({
+      relations: ['roles']
+    });
   }
 }
