@@ -26,7 +26,6 @@ export function getConnectionOptions(envConfig: ENVIRONMENT['DB']) {
   };
 
   return {
-    type: envConfig.DIALECT,
     host: configWithoutUrl.HOST,
     port: configWithoutUrl.PORT,
     username: configWithoutUrl.USER,
