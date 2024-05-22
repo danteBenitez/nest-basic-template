@@ -17,6 +17,9 @@ import { Role } from '@/auth/entities/role.entity';
       imports: [ConfigModule],
       useFactory: (config: ConfigService) => {
         const dbConfig = config.get<ENVIRONMENT['DB']>('DB');
+        if (!dbConfig) {
+          throw new Error("DB configuration not found");
+        }
         return {
           ...getConnectionOptions(dbConfig),
           entities: [Role]
