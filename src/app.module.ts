@@ -8,6 +8,7 @@ import { getConnectionOptions } from './database/config';
 import { SeederModule } from './database/seeder/seeder.module';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
+import { ProjectsModule } from './projects/projects.module';
 
 @Module({
   imports: [
@@ -26,7 +27,8 @@ import { UsersModule } from './users/users.module';
     }),
     SeederModule,
     AuthModule,
-    UsersModule
+    UsersModule,
+    ProjectsModule
   ],
   controllers: [AppController],
   providers: [AppService],
